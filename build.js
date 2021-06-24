@@ -3,9 +3,11 @@ var Uglify = require("uglify-js");
 
 var package = JSON.parse(fs.readFileSync("package.json", "utf-8"));
 var html = fs.readFileSync("src/storyFormat.html", "utf-8");
-var js = Uglify.minify("src/twison.js");
+var js1 = Uglify.minify("src/twison.js");
+// var js2 = Uglify.minify("src/henryscroll.js");
 
-html = html.replace("{{SCRIPT}}", js.code);
+html = html.replace("{{SCRIPT1}}", js1.code);
+//html = html.replace("{{SCRIPT2}}", js2.code);
 
 var outputJSON = {
   name: package.name,

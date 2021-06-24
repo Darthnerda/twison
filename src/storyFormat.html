@@ -1,6 +1,11 @@
 <html>
   <head>
     <title>{{STORY_NAME}}</title>
+    <style type="text/css">
+      p {
+        font-size: 10em;
+      }
+    </style>
     <script type="text/javascript">
       /**
        * Twison - Twine 2 JSON Export Story Format
@@ -23,16 +28,101 @@
        * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
        * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
        */
-      {{SCRIPT}}
+      {{SCRIPT1}}
+
+      function parse() {
+        var twisonformat = JSON.parse(Twison.convert());
+        console.log(twisonformat);
+        var paragraphs = twisonformat.passages.map(function(e) {
+          console.log(e.tags);
+          var visible = e.tags ? e.tags.includes("visible") : false;
+          return {id: e.name, text: e.text, visible: visible, adds: e.links ? e.links.filter(function(f) {f.name=="adds"}).map(function(f) {f.link}): false, subtracts: e.links ? e.links.filter(function(f) {f.name=="subtracts"}).map(function(f) {f.link}) : false}
+        })
+        return paragraphs
+      }
+
+
+      function init() {
+
+        const paragraphs = parse();
+        console.log(paragraphs);
+
+        // console.log(wh);
+        const body = document.getElementById("output");
+        const offset = 100;
+        const wh = window.innerHeight - offset;
+
+        paragraphs.forEach((p, i) => {
+          addParagraph(p);
+        })
+
+        document.addEventListener('scroll', e => {
+           const lastKnownScrollPosition = window.scrollY;
+           console.log(lastKnownScrollPosition);
+           paragraphs.forEach((p, i) => {
+             if(!p.visible) return;
+             const tag = document.getElementById(p.id);
+             p.rect = tag.getBoundingClientRect();
+             if (p.rect.top <= wh && p.rect.top >=-wh) {
+               if (p.adds) {
+                 p.adds.forEach(pa => {
+                   const target = paragraphs.find(po => po.id==pa);
+                   target.visible = true;
+                   if(!document.getElementById(target.id)) {
+                     const after = document.getElementById(paragraphs[paragraphs.indexOf(target)-1].id)
+                     console.log(after)
+                     addParagraph(target, after);
+                   }
+                })
+               }
+               if (p.subtracts) {
+                 p.subtracts.forEach(ps => {
+                   const target = paragraphs.find(po => po.id==ps);
+                   target.visible = false;
+                   if (document.getElementById(target.id)) removeParagraph(target);
+                 })
+               }
+             }
+             // console.log(p.text, p.rect.top, p.rect.right, p.rect.bottom, p.rect.left);
+           })
+        })
+      }
+
+      function addParagraph(p,after=null) {
+        if (!p.visible) return;
+        const tag = document.createElement("p");
+        tag.setAttribute('id', p.id)
+        const text = document.createTextNode(p.text);
+        tag.appendChild(text);
+        const body = document.getElementById("output");
+        if (!after) {
+          body.appendChild(tag);
+        } else {
+          insertAfter(tag, after);
+        }
+        p.rect = tag.getBoundingClientRect();
+      }
+
+      function removeParagraph(p) {
+        const tag = document.getElementById(p.id);
+        if (tag) {
+          const body = document.getElementById("output");
+          body.removeChild(tag);
+        }
+      }
+
+      function insertAfter(newNode, referenceNode) {
+          referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+      }
     </script>
   </head>
-  <body>
-    <pre id="output"></pre>
+  <body onload="init()">
+    <div id="output"></div>
     <div id="storyData" style="display: none;">
       {{STORY_DATA}}
     </div>
     <script>
-      Twison.convert();
+      // Twison.convert();
     </script>
   </body>
 </html>

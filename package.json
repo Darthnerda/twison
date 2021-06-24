@@ -1,7 +1,7 @@
 {
-  "name": "Twison",
+  "name": "Amnesiac-Twison",
   "version": "0.0.1",
-  "description": "Export your Twine 2 story as a JSON document",
+  "description": "Interpret Twison JSON as henryscroller",
   "main": "format.js",
   "scripts": {
     "test": "cd test && mocha test.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lazerwalker/twison"
+    "url": "https://github.com/Darthnerda/Amnesiac-Twison"
   },
-  "author": "Em Lazer-Walker",
+  "author": "Josh Bevan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lazerwalker/twison/issues"
+    "url": "https://github.com/Darthnerda/Amnesiac-Twison/issues"
   },
-  "homepage": "https://github.com/lazerwalker/twison",
+  "homepage": "https://github.com/Darthnerda/Amnesiac-Twison",
   "devDependencies": {
     "chai": "^3.4.1",
     "express": "^4.13.3",

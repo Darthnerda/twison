@@ -180,7 +180,9 @@ var Twison = {
   convert: function() {
     var storyData = document.getElementsByTagName("tw-storydata")[0];
     var json = JSON.stringify(Twison.convertStory(storyData), null, 2);
-    document.getElementById("output").innerHTML = json;
+
+    return json;
+    //document.getElementById("output").innerHTML = json;
   }
 }
 
